@@ -1,12 +1,81 @@
+html, body, header, footer, section, article, div,
+strong, a, img, p, h1, h2, h3, time, ul, li, small,
+form, label, input, textarea, button, nav, span, figure {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font: inherit;
+  box-sizing: inherit;
+  text-align: inherit;
+  text-decoration: inherit;
+  vertical-align: inherit;
+  color: inherit;
+  background: transparent;
+}
+
+.group:after {
+  content: "";
+  clear: both;
+  display: block;
+}
+
+strong {
+  font-weight: bold;
+}
+
+ul {
+  list-style: none;
+}
+
+body {
+  font-family: arial;
+  background: #eee;
+  padding: 20px;
+}
+
 #chat {
-  border: 2px solid #777;
+  background: white;
+  border: 1px solid #777;
+  border-radius: 5px;
   width: 800px;
   height: 400px;
   margin: 20px;
   padding: 20px;
   overflow: scroll;
+  box-shadow: 3px 3px 3px gray;
 }
 
-ul {
-  list-style: none;
+strong.nick {
+  margin: 10px 25px;
+  display: block;
+}
+
+#sendmsg {
+  margin-left: 25px;
+}
+
+#sendmsg input {
+  background: white;
+  border: 1px solid #777;
+  border-radius: 3px;
+  width: 400px;
+  padding: 5px;
+}
+
+#sendmsg button {
+  margin: 0 10px;
+  border: 1px solid #777;
+  border-radius: 3px;
+  padding: 3px;
+  background: #ccc;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#sendmsg button:active {
+  color: #ccc;
+  background: white;
 }

@@ -48,7 +48,7 @@ $(document).ready(function () {
           throw err;
         }
       }
-    } else {
+    } else if (input.length > 0){
       chat.sendMessage(input);
     }
 
