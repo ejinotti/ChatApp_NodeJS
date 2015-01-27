@@ -4,6 +4,7 @@ function ChatUI (socket) {
   this.currentRoom = null;
 
   this.template = _.template($("script.template").html());
+  this.templateTab = _.template($("script.template-tab").html());
 
   this.socket.on("message", this.handleMessage.bind(this));
   this.socket.on("nicknameChangeResult", this.handleNickChange.bind(this));
@@ -12,6 +13,8 @@ function ChatUI (socket) {
   this.socket.on("roomLeave", this.handleRoomLeave.bind(this));
 
   $("#sendmsg").on("submit", this.processUserInput.bind(this));
+  $("#room-tabs").on("click", "li", this.selectRoom.bind(this));
+  $("#room-tabs").on("click", "span", this.closeRoom.bind(this));
 }
 
 ChatUI.prototype.getRoom = function (roomName) {
@@ -34,6 +37,27 @@ ChatUI.prototype.hideRoom = function (roomName) {
 
 ChatUI.prototype.showRoom = function (roomName) {
   this.getRoom(roomName).show();
+};
+
+ChatUI.prototype.selectRoom = function (event) {
+  var newRoom = $(event.currentTarget).data("room");
+
+  console.log("selectRoom => " + newRoom);
+
+  this.hideRoom(this.currentRoom);
+  this.showRoom(newRoom);
+
+  this.currentRoom = newRoom;
+};
+
+ChatUI.prototype.closeRoom = function (event) {
+  event.stopPropagation();
+
+  var killRoom = $(event.currentTarget).data("room");
+
+  console.log("closeRoom => " + killRoom);
+
+  this.leaveRoom(killRoom);
 };
 
 ChatUI.prototype.handleMessage = function (data) {
@@ -72,8 +96,10 @@ ChatUI.prototype.handleJoinRoomResult = function (data) {
 
   this.currentRoom = data.room;
 
-  $("#room-tabs").append($("<li>").text(data.room));
-  var content = this.template({ roomName: data.room });
+  var content = this.templateTab({ roomName: data.room });
+  $("#room-tabs").append(content);
+
+  content = this.template({ roomName: data.room });
   $("#chat").append(content);
 
   var that = this;
@@ -87,7 +113,7 @@ ChatUI.prototype.leaveRoom = function (room) {
   this.getRoom(room).remove();
 
   var $killTab = $("#room-tabs li").filter(function () {
-    return $(this).text() === room;
+    return $(this).data("room") === room;
   });
 
   if (room !== this.currentRoom) {
@@ -99,10 +125,10 @@ ChatUI.prototype.leaveRoom = function (room) {
   var $prevTab = $killTab.prev();
 
   if ($nextTab.length) {
-    this.currentRoom = $nextTab.text();
+    this.currentRoom = $nextTab.data("room");
     this.showRoom(this.currentRoom);
   } else if ($prevTab.length) {
-    this.currentRoom = $prevTab.text();
+    this.currentRoom = $prevTab.data("room");
     this.showRoom(this.currentRoom);
   } else {
     this.currentRoom = null;
