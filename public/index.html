@@ -10,16 +10,16 @@
     <title>zChat</title>
   </head>
   <body>
+    <ul id="room-tabs" class="group"></ul>
     <section id="chat"></section>
-    <strong class="nick"></strong>
+    <strong id="nick"></strong>
     <form id="sendmsg" action="index.html" method="post">
       <input type="text" name="message" value="">
       <button name="SEND">SEND</button>
     </form>
 
     <script type="text/template" class="template">
-      <a href="javascript:void(0)" class="room-tab"><%= roomName %></a>
-      <section class="room">
+      <section class="room group" data-room="<%= roomName %>">
         <ul class="room-chat"></ul>
         <ul class="room-list"></ul>
       </section>

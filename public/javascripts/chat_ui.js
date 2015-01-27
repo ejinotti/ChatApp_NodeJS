@@ -1,20 +1,34 @@
 function ChatUI (socket) {
+  console.log("new ChatUI created..");
   this.socket = socket;
-  this.$rooms = {};
   this.currentRoom = null;
 
   this.template = _.template($("script.template").html());
 
-  debugger;
+  // debugger;
 
-  this.socket.on("message", this.handleMessage);
-  this.socket.on("nicknameChangeResult", this.handleNickChange);
-  this.socket.on("joinRoomResult", this.handleJoinRoomResult);
-  this.socket.on("roomJoin", this.handleRoomJoin);
-  this.socket.on("roomLeave", this.handleRoomLeave);
+  this.socket.on("message", this.handleMessage.bind(this));
+  this.socket.on("nicknameChangeResult", this.handleNickChange.bind(this));
+  this.socket.on("joinRoomResult", this.handleJoinRoomResult.bind(this));
+  this.socket.on("roomJoin", this.handleRoomJoin.bind(this));
+  this.socket.on("roomLeave", this.handleRoomLeave.bind(this));
 
-  $("#sendmsg").on("submit", this.processUserInput);
+  $("#sendmsg").on("submit", this.processUserInput.bind(this));
 }
+
+ChatUI.prototype.getRoom = function (roomName) {
+  return $(".room").filter(function () {
+    return $(this).data("room") === roomName;
+  });
+};
+
+ChatUI.prototype.hideRoom = function (roomName) {
+  this.getRoom.hide();
+};
+
+ChatUI.prototype.showRoom = function (roomName) {
+  this.getRoom.show();
+};
 
 ChatUI.prototype.handleMessage = function (data) {
   var $li = $('<li>');
@@ -25,12 +39,15 @@ ChatUI.prototype.handleMessage = function (data) {
     $li.html(_.escape(data.message));
   }
 
-  this.$rooms[data.room].find("ul.room-chat").append($li);
+  this.getRoom(data.room).find(".room-chat").append($li);
 };
 
 ChatUI.prototype.handleNickChange = function (data) {
+  console.log("received nick change result..");
+
   if (data.success) {
-    $('#nick').html(_.escape(data.message));
+    console.log("success, new nick is: " + data.message);
+    $('#nick').text(data.message);
   } else {
     this.handleMessage({
       room: this.currentRoom,
@@ -41,25 +58,36 @@ ChatUI.prototype.handleNickChange = function (data) {
 };
 
 ChatUI.prototype.handleJoinRoomResult = function (data) {
-  this.currentRoom && this.$rooms[this.currentRoom].hide();
+  console.log("JoinRoomResult received..");
+  console.log("data.room = " + data.room);
+  console.log(data.nicks);
+
+  this.currentRoom && this.hideRoom(this.currentRoom);
 
   this.currentRoom = data.room;
 
+  // debugger;
+
+  $("#room-tabs").append($("<li>").text(data.room));
   var content = this.template({ roomName: data.room });
-  this.$rooms[data.room] = $(content).find("section.room");
+  $("#chat").append(content);
 
   var that = this;
   data.nicks.forEach(function (nick) {
     that.handleRoomJoin({ room: data.room, nick: nick });
   });
 
-  $("#chat").append(this.$currentRoom);
+  // debugger;
+
 };
 
 ChatUI.prototype.handleRoomJoin = function (data) {
-  var $li = $("<li>");
-  $li.html(_.escape(data.nick));
-  this.$rooms[data.room].find("ul.room-list").append($li);
+  console.log("handleRoomJoin, room = " + data.room + ", nick = " + data.nick);
+  // console.log(this.getRoom(data.room));
+  // console.log(this);
+  // debugger;
+  var $li = $("<li>").text(data.nick);
+  this.getRoom(data.room).find(".room-list").append($li);
 };
 
 ChatUI.prototype.handleRoomLeave = function (data) {
@@ -71,7 +99,7 @@ ChatUI.prototype.handleRoomLeave = function (data) {
 ChatUI.prototype.processUserInput = function (event) {
   event.preventDefault();
 
-  var $inputEl = $(this).find('input');
+  var $inputEl = $(event.target).find('input');
 
   var input = $inputEl.val();
 

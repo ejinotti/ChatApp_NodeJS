@@ -34,8 +34,11 @@ body {
   padding: 20px;
 }
 
+#room-tabs li {
+  float: left;
+}
+
 #chat {
-  position: relative;
   background: white;
   border: 1px solid #777;
   border-radius: 5px;
@@ -47,14 +50,9 @@ body {
   box-shadow: 3px 3px 3px gray;
 }
 
-.room-tab {
-  position: absolute;
-  top: 0;
-}
-
 .room {
-  position: absolute;
-  top: 20px;
+  height: 100%;
+  width: 100%;
 }
 
 .room ul {
@@ -62,11 +60,16 @@ body {
 }
 
 .room > .room-chat {
-
+  background: yellow;
+  width: calc(75% - 1px);
+  display: inline-block;
 }
 
 .room > .room-list {
+  background: orange;
+  width: 25%;
   float: right;
+  border-left: 1px solid #777;
 }
 
 #nick {
