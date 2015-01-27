@@ -110,7 +110,7 @@ ChatUI.prototype.processUserInput = function (event) {
 
   if (input[0] === "/") {
     try {
-      chat.processCommand(input);
+      this.processCommand(input);
     } catch (err) {
       if (typeof err === "string") {
         this.handleMessage({ message: err, bold: true });
