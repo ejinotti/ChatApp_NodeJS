@@ -35,6 +35,7 @@ body {
 }
 
 #chat {
+  position: relative;
   background: white;
   border: 1px solid #777;
   border-radius: 5px;
@@ -46,7 +47,29 @@ body {
   box-shadow: 3px 3px 3px gray;
 }
 
-strong.nick {
+.room-tab {
+  position: absolute;
+  top: 0;
+}
+
+.room {
+  position: absolute;
+  top: 20px;
+}
+
+.room ul {
+  height: 100%;
+}
+
+.room > .room-chat {
+
+}
+
+.room > .room-list {
+  float: right;
+}
+
+#nick {
   margin: 10px 25px;
   display: block;
 }

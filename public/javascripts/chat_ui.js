@@ -1,11 +1,17 @@
 function ChatUI (socket) {
   this.socket = socket;
-  this.rooms = {};
+  this.$rooms = {};
+  this.currentRoom = null;
+
+  this.template = _.template($("script.template").html());
+
+  debugger;
 
   this.socket.on("message", this.handleMessage);
   this.socket.on("nicknameChangeResult", this.handleNickChange);
-  this.socket.on("joinRoomResult", this.handleJoinRoom);
-  this.socket.on("roomList", this.handleRoomList);
+  this.socket.on("joinRoomResult", this.handleJoinRoomResult);
+  this.socket.on("roomJoin", this.handleRoomJoin);
+  this.socket.on("roomLeave", this.handleRoomLeave);
 
   $("#sendmsg").on("submit", this.processUserInput);
 }
@@ -19,25 +25,47 @@ ChatUI.prototype.handleMessage = function (data) {
     $li.html(_.escape(data.message));
   }
 
-  $('#chat').find('ul').append($li);
+  this.$rooms[data.room].find("ul.room-chat").append($li);
 };
 
 ChatUI.prototype.handleNickChange = function (data) {
   if (data.success) {
-    $('.nick').html(_.escape(data.message));
+    $('#nick').html(_.escape(data.message));
   } else {
-    var $li = $('<li>');
-    $li.html('<b>' + _.escape(data.message) + '</b>');
-    $('#chat').find('ul').append($li);
+    this.handleMessage({
+      room: this.currentRoom,
+      message: data.message,
+      bold: true
+    });
   }
 };
 
-ChatUI.prototype.handleJoinRoom = function (data) {
+ChatUI.prototype.handleJoinRoomResult = function (data) {
+  this.currentRoom && this.$rooms[this.currentRoom].hide();
 
+  this.currentRoom = data.room;
+
+  var content = this.template({ roomName: data.room });
+  this.$rooms[data.room] = $(content).find("section.room");
+
+  var that = this;
+  data.nicks.forEach(function (nick) {
+    that.handleRoomJoin({ room: data.room, nick: nick });
+  });
+
+  $("#chat").append(this.$currentRoom);
 };
 
-ChatUI.prototype.handleRoomList = function (data) {
+ChatUI.prototype.handleRoomJoin = function (data) {
+  var $li = $("<li>");
+  $li.html(_.escape(data.nick));
+  this.$rooms[data.room].find("ul.room-list").append($li);
+};
 
+ChatUI.prototype.handleRoomLeave = function (data) {
+  this.$rooms[data.room].find("ul.room-list").find("li").filter(function () {
+    return $(this).text === data.nick;
+  }).remove();
 };
 
 ChatUI.prototype.processUserInput = function (event) {
@@ -52,15 +80,16 @@ ChatUI.prototype.processUserInput = function (event) {
       chat.processCommand(input);
     } catch (err) {
       if (typeof err === "string") {
-        var $li = $('<li>');
-        $li.html('<b>' + err + '</b>');
-        $('#chat').find('ul').append($li);
+        this.handleMessage({ message: err, bold: true });
       } else {
         throw err;
       }
     }
   } else if (input.length > 0){
-    chat.sendMessage(input);
+    this.socket.emit("message", {
+      room: this.currentRoom,
+      message: input
+    });
   }
 
   $inputEl.val("");
@@ -85,68 +114,9 @@ ChatUI.prototype.processCommand = function (cmd) {
     } else {
       throw "Invalid Room!";
     }
-  } else if (cmd.match(/^\/leave\s+/)) {
-    this.socket.emit("leaveRoomRequest");
+  } else if (cmd.match(/^\/leave\s+$/)) {
+    this.socket.emit("leaveRoomRequest", this.currentRoom);
   } else {
     throw "Invalid Command!";
   }
 };
-
-//
-// $(document).ready(function () {
-//   var socket = io();
-//   var chat = new Chat(socket);
-//
-//   // display msgs from server.
-//   socket.on('message', function (data) {
-//
-//     var $li = $('<li>');
-//
-//     if (data.bold) {
-//       $li.html('<b>' + _.escape(data.message) + '</b>');
-//     } else {
-//       $li.html(_.escape(data.message));
-//     }
-//
-//     $('#chat').find('ul').append($li);
-//   });
-//
-//   // handle nick change response
-//   socket.on('nicknameChangeResult', function (data) {
-//     if (data.success) {
-//       $('.nick').html(_.escape(data.message));
-//     } else {
-//       var $li = $('<li>');
-//       $li.html('<b>' + _.escape(data.message) + '</b>');
-//       $('#chat').find('ul').append($li);
-//     }
-//   });
-//
-//   // handle user input
-//   $('#sendmsg').on('submit', function (event) {
-//     event.preventDefault();
-//
-//     var $inputEl = $(this).find('input');
-//
-//     var input = $inputEl.val();
-//
-//     if (input[0] === "/") {
-//       try {
-//         chat.processCommand(input);
-//       } catch (err) {
-//         if (typeof err === "string") {
-//           var $li = $('<li>');
-//           $li.html('<b>' + err + '</b>');
-//           $('#chat').find('ul').append($li);
-//         } else {
-//           throw err;
-//         }
-//       }
-//     } else if (input.length > 0){
-//       chat.sendMessage(input);
-//     }
-//
-//     $inputEl.val("");
-//   });
-//
-// });
