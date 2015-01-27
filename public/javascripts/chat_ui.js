@@ -11,6 +11,7 @@ function ChatUI (socket) {
   this.socket.on("joinRoomResult", this.handleJoinRoomResult.bind(this));
   this.socket.on("roomJoin", this.handleRoomJoin.bind(this));
   this.socket.on("roomLeave", this.handleRoomLeave.bind(this));
+  this.socket.on("roomNick", this.handleRoomNick.bind(this));
 
   $("#sendmsg").on("submit", this.processUserInput.bind(this));
   $("#room-tabs").on("click", "li", this.selectRoom.bind(this));
@@ -154,6 +155,13 @@ ChatUI.prototype.handleRoomLeave = function (data) {
   this.getRoomList(data.room).find("li").filter(function () {
     return $(this).text() === data.nick;
   }).remove();
+};
+
+ChatUI.prototype.handleRoomNick = function (data) {
+  console.log("received roomNick");
+  this.getRoomList(data.room).find("li").filter(function () {
+    return $(this).text() === data.oldNick;
+  }).text(data.newNick);
 };
 
 ChatUI.prototype.processUserInput = function (event) {
