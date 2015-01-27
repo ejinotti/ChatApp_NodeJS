@@ -82,6 +82,35 @@ ChatUI.prototype.handleJoinRoomResult = function (data) {
   });
 };
 
+ChatUI.prototype.leaveRoom = function (room) {
+  this.socket.emit("leaveRoomRequest", room);
+  this.getRoom(room).remove();
+
+  var $killTab = $("#room-tabs li").filter(function () {
+    return $(this).text() === room;
+  });
+
+  if (room !== this.currentRoom) {
+    $killTab.remove();
+    return;
+  }
+
+  var $nextTab = $killTab.next();
+  var $prevTab = $killTab.prev();
+
+  if ($nextTab.length) {
+    this.currentRoom = $nextTab.text();
+    this.showRoom(this.currentRoom);
+  } else if ($prevTab.length) {
+    this.currentRoom = $prevTab.text();
+    this.showRoom(this.currentRoom);
+  } else {
+    this.currentRoom = null;
+  }
+
+  $killTab.remove();
+};
+
 ChatUI.prototype.handleRoomJoin = function (data) {
   console.log("RoomJoin received..");
   console.log("data.room = " + data.room);
@@ -113,7 +142,9 @@ ChatUI.prototype.processUserInput = function (event) {
       this.processCommand(input);
     } catch (err) {
       if (typeof err === "string") {
-        this.handleMessage({ message: err, bold: true });
+        this.handleMessage({
+          room: this.currentRoom, message: err, bold: true
+        });
       } else {
         throw err;
       }
@@ -147,8 +178,8 @@ ChatUI.prototype.processCommand = function (cmd) {
     } else {
       throw "Invalid Room!";
     }
-  } else if (cmd.match(/^\/leave\s+$/)) {
-    this.socket.emit("leaveRoomRequest", this.currentRoom);
+  } else if (cmd.match(/^\/leave\s*$/)) {
+    this.leaveRoom(this.currentRoom);
   } else {
     throw "Invalid Command!";
   }
