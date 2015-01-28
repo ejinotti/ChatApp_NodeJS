@@ -77,7 +77,6 @@ ChatUI.prototype.handleMessage = function (data) {
 
 ChatUI.prototype.handleNickChange = function (data) {
   if (data.success) {
-    console.log("success, new nick is: " + data.message);
     $("#nick").text(data.message);
   } else {
     this.handleMessage({
