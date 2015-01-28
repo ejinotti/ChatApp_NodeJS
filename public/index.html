@@ -18,6 +18,13 @@
       <button name="SEND">SEND</button>
     </form>
 
+    <ul id="instructions">
+      <li>/nick [new-nick] = change your nickname.</li>
+      <li>/join [channel] = join a channel.</li>
+      <li>/leave = leave current channel.</li>
+      <li>can also use tabs to switch channel focus or leave.</li>
+    </ul>
+
     <script type="text/template" class="template">
       <section class="room group" data-room="<%= roomName %>">
         <ul class="room-chat"></ul>

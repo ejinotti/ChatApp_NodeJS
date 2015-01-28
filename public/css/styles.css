@@ -116,6 +116,7 @@ body {
 
 #sendmsg {
   margin-left: 25px;
+  margin-bottom: 40px;
 }
 
 #sendmsg input {
@@ -141,4 +142,10 @@ body {
 #sendmsg button:active {
   color: #ccc;
   background: white;
+}
+
+#instructions {
+  margin-left: 25px;
+  font-size: 14px;
+  color: #999;
 }
