@@ -32,10 +32,49 @@ body {
   font-family: arial;
   background: #eee;
   padding: 20px;
+  max-width: 822px;
+}
+
+#room-tabs {
+  margin: 0 0 5px 25px;
 }
 
 #room-tabs li {
   float: left;
+  background: #ccc;
+  border: 1px solid #777;
+  border-radius: 5px;
+  padding: 2px 1px 4px 5px;
+  margin-right: 5px;
+  box-shadow: 1px 1px 1px gray;
+}
+
+#room-tabs li.active {
+  background: white;
+}
+
+#room-tabs p {
+  display: inline-block;
+  padding: 0 5px;
+}
+
+#room-tabs p:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+#room-tabs span {
+  font-size: 12px;
+  border-radius: 12px;
+  padding: 2px 5px;
+  border: 1px solid black;
+}
+
+#room-tabs span:hover {
+  cursor: pointer;
+  color: white;
+  background: black;
+  border: 1px solid white;
 }
 
 #chat {
@@ -44,8 +83,7 @@ body {
   border-radius: 5px;
   width: 800px;
   height: 400px;
-  margin: 20px;
-  padding: 20px;
+  margin-left: 20px;
   overflow: scroll;
   box-shadow: 3px 3px 3px gray;
 }
@@ -57,17 +95,16 @@ body {
 
 .room ul {
   height: 100%;
+  padding: 10px;
 }
 
 .room > .room-chat {
-  background: yellow;
-  width: calc(75% - 1px);
+  width: calc(75% - 21px);
   display: inline-block;
 }
 
 .room > .room-list {
-  background: orange;
-  width: 25%;
+  width: calc(25% - 20px);
   float: right;
   border-left: 1px solid #777;
 }
