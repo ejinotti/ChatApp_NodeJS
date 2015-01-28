@@ -2,8 +2,8 @@
 An experiment with chat and sockets in Node..
 
 **commands:**
-+ **/nick *new-nick*** = change your nickname.
-+ **/join *room-name*** = join a room.
++ **/nick [new-nick]** = change your nickname.
++ **/join [room-name]** = join a room.
 + **/leave** = leave current room.
 
 Can also click on tabs to switch room focus and leave rooms.
