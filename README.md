@@ -1,17 +1,20 @@
 #zChat
-An experiment with chat and sockets in Node..
+**zChat** is a chat chat app in Node.JS.  It uses
+[Socket.IO](http://socket.io/)
+for cross-platform, two-way communication via sockets.  Multi-room participation
+is supported, and a tabbed UI for managing rooms is provided via jQuery and CSS.
 
 **commands:**
 + **/nick [new-nick]** = change your nickname.
 + **/join [room-name]** = join a room.
 + **/leave** = leave current room.
++ Can also click on tabs to switch room focus and leave rooms.
 
-Can also click on tabs to switch room focus and leave rooms.
+*(design choices)*
 
 **TODO:**
 + auto-scrolling etc.
 + server file caching.
 + direct messaging.
 + channel ops: kick, ban, etc.
-
-Think of more stuff..
++ *think of more stuff..*
