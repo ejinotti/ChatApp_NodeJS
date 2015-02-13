@@ -1,7 +1,7 @@
 #zChat
-**zChat** is a chat chat app in Node.JS.  It uses
+**zChat** is a chat app in Node.JS, using
 [Socket.IO](http://socket.io/)
-for cross-platform, two-way communication via sockets.  Multi-room participation
+for cross-platform, two-way communication with sockets.  Multi-room participation
 is supported, and a tabbed UI for managing rooms is provided via jQuery and CSS.
 
 **commands:**
