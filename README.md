@@ -10,7 +10,10 @@ is supported, and a tabbed UI for managing rooms is provided via jQuery and CSS.
 + **/leave** = leave current room.
 + Can also click on tabs to switch room focus and leave rooms.
 
-*(design choices)*
+######Design
+The major design choice with this project was how to keep the server code clean
+and modular.  My decision was to create the ChatConnection class and spawn a new
+one for each incoming client connection.
 
 **TODO:**
 + auto-scrolling etc.
